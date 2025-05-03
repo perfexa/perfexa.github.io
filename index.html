@@ -1,23 +1,681 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>PC Parts Terminal</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSpec Compare</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #141c2b;
+            --accent: #00b4d8;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --glow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 180, 216, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 180, 216, 0.03) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+        }
+        
+        header {
+            padding: 1.5rem;
+            background-color: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: var(--glow);
+        }
+        
+        .logo span {
+            color: var(--text-primary);
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0.25rem 0;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .active {
+            color: var(--accent);
+        }
+        
+        .active::after {
+            width: 100%;
+        }
+        
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .hero {
+            text-align: center;
+            margin: 2rem 0 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+        
+        #search {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-radius: 8px;
+            background-color: rgba(20, 28, 43, 0.8);
+            color: var(--text-primary);
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        #search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+        
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-radius: 0 0 8px 8px;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-top: none;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .result-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-item:hover {
+            background-color: rgba(0, 180, 216, 0.1);
+        }
+        
+        .result-img {
+            width: 50px;
+            height: 50px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .result-info {
+            flex: 1;
+        }
+        
+        .result-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-specs {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        
+        .result-price {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .result-type {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        
+        .type-cpu {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .type-gpu {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .category-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0, 180, 216, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .category-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        
+        footer {
+            background-color: rgba(10, 14, 23, 0.8);
+            padding: 2rem 0;
+            border-top: 1px solid rgba(0, 180, 216, 0.2);
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Terminal-like typing animation */
+        .terminal-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .terminal-text::after {
+            content: '|';
+            position: absolute;
+            right: -8px;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="typewriter">
-            <h1>> PC PARTS COMPARISON TOOL</h1>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <div>Tech<span>Spec</span></div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#">CPUs</a></li>
+                        <li><a href="#">GPUs</a></li>
+                        <li><a href="#">Compare</a></li>
+                        <li><a href="#">Benchmarks</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-        
-        <div class="search-container">
-            <input type="text" id="search" placeholder="Search CPU/GPU (e.g., 'RTX 4090' or 'Ryzen 9')" autofocus>
-            <button onclick="searchPart()">ENTER</button>
-        </div>
-        
-        <div id="results"></div>
-    </div>
+    </header>
     
-    <script src="script.js"></script>
+    <main class="container">
+        <section class="hero">
+            <h1>Find the Perfect <span class="terminal-text">Tech</span> for Your Build</h1>
+            <p>Compare specs, performance, and prices of the latest CPUs and GPUs to make informed decisions for your next PC build or upgrade.</p>
+        </section>
+        
+        <section class="search-container">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search" placeholder="Search CPUs or GPUs..." autocomplete="off">
+            </div>
+            <div id="search-results"></div>
+        </section>
+        
+        <section class="categories">
+            <div class="category-card">
+                <div class="category-icon">💻</div>
+                <h3 class="category-title">CPUs</h3>
+                <p class="category-description">Find and compare processors from AMD, Intel, and more with detailed specifications.</p>
+                <div class="category-stats">
+                    <span>152 Products</span>
+                    <span>•</span>
+                    <span>Last updated: 1d ago</span>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">🎮</div>
+                <h3 class="category-title">GPUs</h3>
+                <p class="category-description">Compare graphics cards from NVIDIA, AMD, and Intel to find the best fit for your gaming needs.</p>
+                <div class="category-stats">
+                    <span>98 Products</span>
+                    <span>•</span>
+                    <span>Last updated: 2d ago</span>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">📊</div>
+                <h3 class="category-title">Benchmarks</h3>
+                <p class="category-description">View real-world performance data and benchmarks across various applications and games.</p>
+                <div class="category-stats">
+                    <span>1250+ Tests</span>
+                    <span>•</span>
+                    <span>Last updated: 6h ago</span>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">📈</div>
+                <h3 class="category-title">Price Tracker</h3>
+                <p class="category-description">Track prices over time and get alerts when your desired components go on sale.</p>
+                <div class="category-stats">
+                    <span>24 Retailers</span>
+                    <span>•</span>
+                    <span>Live updates</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">© 2025 TechSpec Compare. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#">About</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Sample data for demonstration
+        const techParts = [
+            {
+                id: 1,
+                name: "AMD Ryzen 9 7950X",
+                type: "CPU",
+                specs: "16 Cores, 32 Threads, 5.7GHz, AM5",
+                price: "$549.99"
+            },
+            {
+                id: 2,
+                name: "Intel Core i9-14900K",
+                type: "CPU",
+                specs: "24 Cores (8P+16E), 32 Threads, 6.0GHz, LGA1700",
+                price: "$589.99"
+            },
+            {
+                id: 3,
+                name: "AMD Ryzen 7 7800X3D",
+                type: "CPU",
+                specs: "8 Cores, 16 Threads, 5.0GHz, 96MB Cache, AM5",
+                price: "$449.99"
+            },
+            {
+                id: 4,
+                name: "Intel Core i5-14600K",
+                type: "CPU",
+                specs: "14 Cores (6P+8E), 20 Threads, 5.3GHz, LGA1700",
+                price: "$319.99"
+            },
+            {
+                id: 5,
+                name: "NVIDIA RTX 4090",
+                type: "GPU",
+                specs: "16384 CUDA Cores, 24GB GDDR6X, 450W TDP",
+                price: "$1,599.99"
+            },
+            {
+                id: 6,
+                name: "AMD Radeon RX 7900 XTX",
+                type: "GPU",
+                specs: "12288 Stream Processors, 24GB GDDR6, 355W TDP",
+                price: "$999.99"
+            },
+            {
+                id: 7,
+                name: "NVIDIA RTX 4070 Ti",
+                type: "GPU",
+                specs: "7680 CUDA Cores, 12GB GDDR6X, 285W TDP",
+                price: "$799.99"
+            },
+            {
+                id: 8,
+                name: "Intel Arc A770",
+                type: "GPU",
+                specs: "32 Xe Cores, 16GB GDDR6, 225W TDP",
+                price: "$329.99"
+            },
+            {
+                id: 9,
+                name: "AMD Ryzen 5 7600X",
+                type: "CPU",
+                specs: "6 Cores, 12 Threads, 5.3GHz, AM5",
+                price: "$249.99"
+            },
+            {
+                id: 10,
+                name: "AMD Radeon RX 7800 XT",
+                type: "GPU",
+                specs: "3840 Stream Processors, 16GB GDDR6, 263W TDP",
+                price: "$579.99"
+            }
+        ];
+        
+        const searchInput = document.getElementById('search');
+        const searchResults = document.getElementById('search-results');
+        
+        // Typing effect for terminal text
+        const terminalText = document.querySelector('.terminal-text');
+        const words = ['Tech', 'CPU', 'GPU', 'Hardware'];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 150;
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                terminalText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                terminalText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            if (!isDeleting && charIndex === currentWord.length) {
+                isDeleting = true;
+                typingSpeed = 100;
+                setTimeout(typeEffect, 1500);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                typingSpeed = 150;
+                wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(typeEffect, 500);
+            } else {
+                setTimeout(typeEffect, typingSpeed);
+            }
+        }
+        
+        // Start the typing effect
+        setTimeout(typeEffect, 1000);
+        
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const filteredParts = techParts.filter(part => 
+                part.name.toLowerCase().includes(searchTerm) || 
+                part.type.toLowerCase().includes(searchTerm) ||
+                part.specs.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredParts.length > 0) {
+                displayResults(filteredParts, searchTerm);
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = `<div class="result-item">No results found for "${searchTerm}"</div>`;
+                searchResults.style.display = 'block';
+            }
+        });
+        
+        function displayResults(results, searchTerm) {
+            searchResults.innerHTML = '';
+            
+            results.forEach(part => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                // Highlight matching text
+                const highlightedName = highlightText(part.name, searchTerm);
+                const highlightedSpecs = highlightText(part.specs, searchTerm);
+                
+                resultItem.innerHTML = `
+                    <div class="result-img">${part.type === 'CPU' ? '💻' : '🎮'}</div>
+                    <div class="result-info">
+                        <div class="result-name">${highlightedName} <span class="result-type type-${part.type.toLowerCase()}">${part.type}</span></div>
+                        <div class="result-specs">${highlightedSpecs}</div>
+                    </div>
+                    <div class="result-price">${part.price}</div>
+                `;
+                
+                // Add click event to navigate to detail page
+                resultItem.addEventListener('click', () => {
+                    // In a real app, this would navigate to a detail page
+                    alert(`You selected: ${part.name}`);
+                });
+                
+                searchResults.appendChild(resultItem);
+            });
+        }
+        
+        function highlightText(text, searchTerm) {
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Handle focus on search input
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim() !== '') {
+                searchResults.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
