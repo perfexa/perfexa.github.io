@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechSpec Compare</title>
+    <title>PC Parts Comparison</title>
     <style>
         :root {
             --bg-primary: #0a0e17;
@@ -242,11 +242,6 @@
             font-size: 0.8rem;
         }
         
-        .result-price {
-            font-weight: bold;
-            color: var(--accent);
-        }
-        
         .result-type {
             font-size: 0.7rem;
             padding: 0.2rem 0.5rem;
@@ -400,15 +395,12 @@
             <div class="header-content">
                 <div class="logo">
                     <div class="logo-icon">⚡</div>
-                    <div>Tech<span>Spec</span></div>
+                    <div>PC<span>Compare</span></div>
                 </div>
                 <nav>
                     <ul>
                         <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">CPUs</a></li>
-                        <li><a href="#">GPUs</a></li>
-                        <li><a href="#">Compare</a></li>
-                        <li><a href="#">Benchmarks</a></li>
+                        <li><a href="compare.html">Compare</a></li>
                     </ul>
                 </nav>
             </div>
@@ -417,8 +409,8 @@
     
     <main class="container">
         <section class="hero">
-            <h1>Find the Perfect <span class="terminal-text">Tech</span> for Your Build</h1>
-            <p>Compare specs, performance, and prices of the latest CPUs and GPUs to make informed decisions for your next PC build or upgrade.</p>
+            <h1>Compare <span class="terminal-text">PC</span> Parts Side-by-Side</h1>
+            <p>Select CPUs or GPUs to compare specifications and performance metrics for informed purchasing decisions.</p>
         </section>
         
         <section class="search-container">
@@ -430,47 +422,25 @@
         </section>
         
         <section class="categories">
-            <div class="category-card">
+            <div class="category-card" onclick="location.href='compare.html?type=cpu&id=i9-13900K'">
                 <div class="category-icon">💻</div>
                 <h3 class="category-title">CPUs</h3>
-                <p class="category-description">Find and compare processors from AMD, Intel, and more with detailed specifications.</p>
+                <p class="category-description">Compare processors from Intel and AMD with detailed specifications.</p>
                 <div class="category-stats">
-                    <span>152 Products</span>
+                    <span id="cpu-count">Loading...</span>
                     <span>•</span>
-                    <span>Last updated: 1d ago</span>
+                    <span>Updated daily</span>
                 </div>
             </div>
             
-            <div class="category-card">
+            <div class="category-card" onclick="location.href='compare.html?type=gpu&id=rtx4090'">
                 <div class="category-icon">🎮</div>
                 <h3 class="category-title">GPUs</h3>
-                <p class="category-description">Compare graphics cards from NVIDIA, AMD, and Intel to find the best fit for your gaming needs.</p>
+                <p class="category-description">Compare graphics cards from NVIDIA, AMD, and Intel.</p>
                 <div class="category-stats">
-                    <span>98 Products</span>
+                    <span id="gpu-count">Loading...</span>
                     <span>•</span>
-                    <span>Last updated: 2d ago</span>
-                </div>
-            </div>
-            
-            <div class="category-card">
-                <div class="category-icon">📊</div>
-                <h3 class="category-title">Benchmarks</h3>
-                <p class="category-description">View real-world performance data and benchmarks across various applications and games.</p>
-                <div class="category-stats">
-                    <span>1250+ Tests</span>
-                    <span>•</span>
-                    <span>Last updated: 6h ago</span>
-                </div>
-            </div>
-            
-            <div class="category-card">
-                <div class="category-icon">📈</div>
-                <h3 class="category-title">Price Tracker</h3>
-                <p class="category-description">Track prices over time and get alerts when your desired components go on sale.</p>
-                <div class="category-stats">
-                    <span>24 Retailers</span>
-                    <span>•</span>
-                    <span>Live updates</span>
+                    <span>Updated daily</span>
                 </div>
             </div>
         </section>
@@ -479,98 +449,48 @@
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="copyright">© 2025 TechSpec Compare. All rights reserved.</div>
+                <div class="copyright">© 2025 PC Parts Comparison. All rights reserved.</div>
                 <div class="footer-links">
                     <a href="#">About</a>
                     <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Contact</a>
                 </div>
             </div>
         </div>
     </footer>
     
     <script>
-        // Sample data for demonstration
-        const techParts = [
-            {
-                id: 1,
-                name: "AMD Ryzen 9 7950X",
-                type: "CPU",
-                specs: "16 Cores, 32 Threads, 5.7GHz, AM5",
-                price: "$549.99"
-            },
-            {
-                id: 2,
-                name: "Intel Core i9-14900K",
-                type: "CPU",
-                specs: "24 Cores (8P+16E), 32 Threads, 6.0GHz, LGA1700",
-                price: "$589.99"
-            },
-            {
-                id: 3,
-                name: "AMD Ryzen 7 7800X3D",
-                type: "CPU",
-                specs: "8 Cores, 16 Threads, 5.0GHz, 96MB Cache, AM5",
-                price: "$449.99"
-            },
-            {
-                id: 4,
-                name: "Intel Core i5-14600K",
-                type: "CPU",
-                specs: "14 Cores (6P+8E), 20 Threads, 5.3GHz, LGA1700",
-                price: "$319.99"
-            },
-            {
-                id: 5,
-                name: "NVIDIA RTX 4090",
-                type: "GPU",
-                specs: "16384 CUDA Cores, 24GB GDDR6X, 450W TDP",
-                price: "$1,599.99"
-            },
-            {
-                id: 6,
-                name: "AMD Radeon RX 7900 XTX",
-                type: "GPU",
-                specs: "12288 Stream Processors, 24GB GDDR6, 355W TDP",
-                price: "$999.99"
-            },
-            {
-                id: 7,
-                name: "NVIDIA RTX 4070 Ti",
-                type: "GPU",
-                specs: "7680 CUDA Cores, 12GB GDDR6X, 285W TDP",
-                price: "$799.99"
-            },
-            {
-                id: 8,
-                name: "Intel Arc A770",
-                type: "GPU",
-                specs: "32 Xe Cores, 16GB GDDR6, 225W TDP",
-                price: "$329.99"
-            },
-            {
-                id: 9,
-                name: "AMD Ryzen 5 7600X",
-                type: "CPU",
-                specs: "6 Cores, 12 Threads, 5.3GHz, AM5",
-                price: "$249.99"
-            },
-            {
-                id: 10,
-                name: "AMD Radeon RX 7800 XT",
-                type: "GPU",
-                specs: "3840 Stream Processors, 16GB GDDR6, 263W TDP",
-                price: "$579.99"
+        // Load parts data from JSON files
+        async function loadPartsData() {
+            try {
+                const [cpusResponse, gpusResponse] = await Promise.all([
+                    fetch('data/cpus.json'),
+                    fetch('data/gpus.json')
+                ]);
+                
+                if (!cpusResponse.ok || !gpusResponse.ok) {
+                    throw new Error('Failed to load parts data');
+                }
+                
+                const cpus = await cpusResponse.json();
+                const gpus = await gpusResponse.json();
+                
+                // Update counts in UI
+                document.getElementById('cpu-count').textContent = `${cpus.length} Processors`;
+                document.getElementById('gpu-count').textContent = `${gpus.length} Graphics Cards`;
+                
+                return { cpus, gpus };
+            } catch (error) {
+                console.error('Error loading parts data:', error);
+                return { cpus: [], gpus: [] };
             }
-        ];
+        }
         
-        const searchInput = document.getElementById('search');
-        const searchResults = document.getElementById('search-results');
+        // Initialize with empty data
+        let partsData = { cpus: [], gpus: [] };
         
         // Typing effect for terminal text
         const terminalText = document.querySelector('.terminal-text');
-        const words = ['Tech', 'CPU', 'GPU', 'Hardware'];
+        const words = ['PC', 'CPU', 'GPU', 'Hardware'];
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -605,7 +525,10 @@
         setTimeout(typeEffect, 1000);
         
         // Search functionality
-        searchInput.addEventListener('input', function() {
+        const searchInput = document.getElementById('search');
+        const searchResults = document.getElementById('search-results');
+        
+        searchInput.addEventListener('input', async function() {
             const searchTerm = this.value.toLowerCase().trim();
             
             if (searchTerm === '') {
@@ -613,10 +536,20 @@
                 return;
             }
             
-            const filteredParts = techParts.filter(part => 
+            // Ensure parts data is loaded
+            if (partsData.cpus.length === 0 && partsData.gpus.length === 0) {
+                partsData = await loadPartsData();
+            }
+            
+            const allParts = [
+                ...partsData.cpus.map(part => ({ ...part, type: 'CPU' })),
+                ...partsData.gpus.map(part => ({ ...part, type: 'GPU' }))
+            ];
+            
+            const filteredParts = allParts.filter(part => 
                 part.name.toLowerCase().includes(searchTerm) || 
                 part.type.toLowerCase().includes(searchTerm) ||
-                part.specs.toLowerCase().includes(searchTerm)
+                (part.specs && part.specs.toLowerCase().includes(searchTerm))
             );
             
             if (filteredParts.length > 0) {
@@ -635,9 +568,17 @@
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
                 
+                // Create specs string based on part type
+                let specs = '';
+                if (part.type === 'CPU') {
+                    specs = `${part.cores} Cores, ${part.threads} Threads, ${part.speed}`;
+                } else if (part.type === 'GPU') {
+                    specs = `${part.vram}, ${part.speed}`;
+                }
+                
                 // Highlight matching text
                 const highlightedName = highlightText(part.name, searchTerm);
-                const highlightedSpecs = highlightText(part.specs, searchTerm);
+                const highlightedSpecs = highlightText(specs, searchTerm);
                 
                 resultItem.innerHTML = `
                     <div class="result-img">${part.type === 'CPU' ? '💻' : '🎮'}</div>
@@ -645,13 +586,11 @@
                         <div class="result-name">${highlightedName} <span class="result-type type-${part.type.toLowerCase()}">${part.type}</span></div>
                         <div class="result-specs">${highlightedSpecs}</div>
                     </div>
-                    <div class="result-price">${part.price}</div>
                 `;
                 
-                // Add click event to navigate to detail page
+                // Add click event to navigate to comparison
                 resultItem.addEventListener('click', () => {
-                    // In a real app, this would navigate to a detail page
-                    alert(`You selected: ${part.name}`);
+                    window.location.href = `compare.html?type=${part.type.toLowerCase()}&id=${part.id}`;
                 });
                 
                 searchResults.appendChild(resultItem);
@@ -659,6 +598,7 @@
         }
         
         function highlightText(text, searchTerm) {
+            if (!text) return '';
             const regex = new RegExp(`(${searchTerm})`, 'gi');
             return text.replace(regex, '<span class="highlight">$1</span>');
         }
@@ -675,6 +615,11 @@
             if (this.value.trim() !== '') {
                 searchResults.style.display = 'block';
             }
+        });
+        
+        // Load parts data when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            partsData = await loadPartsData();
         });
     </script>
 </body>
