@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Comparison Results</title>
+    <title>PC Parts Comparison</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Comparison Results</h1>
-    
-    <div class="comparison">
-        <div id="cpu-comparison"></div>
-        <div id="gpu-comparison"></div>
+    <div class="terminal">
+        <h1>> COMPARISON MODE: <span id="comparison-type"></span></h1>
+        
+        <div id="comparison-table"></div>
+        
+        <div class="search-container">
+            <input type="text" id="add-part" placeholder="Add another part...">
+            <button onclick="addPart()">ADD</button>
+        </div>
+        
+        <a href="index.html"><< BACK TO SEARCH</a>
     </div>
-    
-    <a href="index.html">Back to Home</a>
     
     <script src="script.js"></script>
 </body>
