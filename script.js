@@ -1,64 +1,120 @@
-// Parts Data (could also be in a JSON file)
-const cpus = {
-    "i9-13900K": { name: "Intel i9-13900K", cores: 24, threads: 32, speed: "5.8GHz" },
-    "r9-7950X": { name: "AMD Ryzen 9 7950X", cores: 16, threads: 32, speed: "5.7GHz" },
-    "i7-13700K": { name: "Intel i7-13700K", cores: 16, threads: 24, speed: "5.4GHz" },
-    "r7-7700X": { name: "AMD Ryzen 7 7700X", cores: 8, threads: 16, speed: "5.4GHz" }
+// Sample Data (could be loaded from JSON later)
+const parts = {
+    cpus: [
+        { id: "i9-13900K", name: "Intel Core i9-13900K", cores: 24, threads: 32, speed: "5.8GHz" },
+        { id: "r9-7950X", name: "AMD Ryzen 9 7950X", cores: 16, threads: 32, speed: "5.7GHz" }
+    ],
+    gpus: [
+        { id: "rtx4090", name: "NVIDIA RTX 4090", vram: "24GB", speed: "2.52GHz" },
+        { id: "rx7900xtx", name: "AMD RX 7900 XTX", vram: "24GB", speed: "2.5GHz" }
+    ]
 };
 
-const gpus = {
-    "rtx4090": { name: "NVIDIA RTX 4090", vram: "24GB", speed: "2.52GHz" },
-    "rx7900xtx": { name: "AMD RX 7900 XTX", vram: "24GB", speed: "2.5GHz" },
-    "rtx4080": { name: "NVIDIA RTX 4080", vram: "16GB", speed: "2.51GHz" },
-    "rx7900xt": { name: "AMD RX 7900 XT", vram: "20GB", speed: "2.4GHz" }
-};
+// Search function
+function searchPart() {
+    const query = document.getElementById("search").value.toLowerCase();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
 
-// Redirect to compare.html with selected parts
-function compareParts() {
-    const cpu1 = document.getElementById("cpu1").value;
-    const cpu2 = document.getElementById("cpu2").value;
-    const gpu1 = document.getElementById("gpu1").value;
-    const gpu2 = document.getElementById("gpu2").value;
-    
-    window.location.href = `compare.html?cpu1=${cpu1}&cpu2=${cpu2}&gpu1=${gpu1}&gpu2=${gpu2}`;
+    if (!query) return;
+
+    // Find matching CPUs/GPUs
+    const cpuMatches = parts.cpus.filter(cpu => 
+        cpu.name.toLowerCase().includes(query)
+    );
+    const gpuMatches = parts.gpus.filter(gpu => 
+        gpu.name.toLowerCase().includes(query)
+    );
+
+    // Display results
+    if (cpuMatches.length > 0) {
+        resultsDiv.innerHTML += "<h3>> CPUs</h3>";
+        cpuMatches.forEach(cpu => {
+            resultsDiv.innerHTML += `
+                <div class="part-option" onclick="startComparison('cpu', '${cpu.id}')">
+                    ${cpu.name} | Cores: ${cpu.cores} | Threads: ${cpu.threads}
+                </div>
+            `;
+        });
+    }
+
+    if (gpuMatches.length > 0) {
+        resultsDiv.innerHTML += "<h3>> GPUs</h3>";
+        gpuMatches.forEach(gpu => {
+            resultsDiv.innerHTML += `
+                <div class="part-option" onclick="startComparison('gpu', '${gpu.id}')">
+                    ${gpu.name} | VRAM: ${gpu.vram} | Speed: ${gpu.speed}
+                </div>
+            `;
+        });
+    }
+
+    if (cpuMatches.length === 0 && gpuMatches.length === 0) {
+        resultsDiv.innerHTML = "<p>> No results found.</p>";
+    }
 }
 
-// On compare.html, display the results
+// Start comparison (redirect to compare.html)
+function startComparison(type, id) {
+    window.location.href = `compare.html?type=${type}&id=${id}`;
+}
+
+// Comparison Page Logic
 if (window.location.pathname.includes("compare.html")) {
     const params = new URLSearchParams(window.location.search);
-    const cpu1 = params.get("cpu1");
-    const cpu2 = params.get("cpu2");
-    const gpu1 = params.get("gpu1");
-    const gpu2 = params.get("gpu2");
-    
-    const cpuComparison = document.getElementById("cpu-comparison");
-    const gpuComparison = document.getElementById("gpu-comparison");
-    
-    cpuComparison.innerHTML = `
-        <div>
-            <h3>${cpus[cpu1].name}</h3>
-            <p>Cores: ${cpus[cpu1].cores}</p>
-            <p>Threads: ${cpus[cpu1].threads}</p>
-            <p>Speed: ${cpus[cpu1].speed}</p>
-        </div>
-        <div>
-            <h3>${cpus[cpu2].name}</h3>
-            <p>Cores: ${cpus[cpu2].cores}</p>
-            <p>Threads: ${cpus[cpu2].threads}</p>
-            <p>Speed: ${cpus[cpu2].speed}</p>
-        </div>
-    `;
-    
-    gpuComparison.innerHTML = `
-        <div>
-            <h3>${gpus[gpu1].name}</h3>
-            <p>VRAM: ${gpus[gpu1].vram}</p>
-            <p>Speed: ${gpus[gpu1].speed}</p>
-        </div>
-        <div>
-            <h3>${gpus[gpu2].name}</h3>
-            <p>VRAM: ${gpus[gpu2].vram}</p>
-            <p>Speed: ${gpus[gpu2].speed}</p>
-        </div>
-    `;
+    const type = params.get("type");
+    const id = params.get("id");
+
+    // Set comparison type (CPU/GPU)
+    document.getElementById("comparison-type").textContent = type.toUpperCase();
+
+    // Load first part
+    const part = parts[type + "s"].find(p => p.id === id);
+    updateComparisonTable(type, [part]);
+
+    // Add new parts
+    window.addPart = function() {
+        const query = document.getElementById("add-part").value.toLowerCase();
+        const matches = parts[type + "s"].filter(p => 
+            p.name.toLowerCase().includes(query)
+        );
+
+        if (matches.length > 0) {
+            const currentParts = JSON.parse(sessionStorage.getItem("compareParts") || "[]");
+            currentParts.push(matches[0]);
+            sessionStorage.setItem("compareParts", JSON.stringify(currentParts));
+            updateComparisonTable(type, currentParts);
+        }
+    };
+}
+
+function updateComparisonTable(type, partsList) {
+    const table = document.getElementById("comparison-table");
+    let html = "<table>";
+
+    // Headers
+    html += "<tr>";
+    html += "<th>Model</th>";
+    if (type === "cpu") {
+        html += "<th>Cores</th><th>Threads</th><th>Speed</th>";
+    } else {
+        html += "<th>VRAM</th><th>Speed</th>";
+    }
+    html += "</tr>";
+
+    // Rows
+    partsList.forEach(part => {
+        html += "<tr>";
+        html += `<td>${part.name}</td>`;
+        if (type === "cpu") {
+            html += `<td>${part.cores}</td><td>${part.threads}</td><td>${part.speed}</td>`;
+        } else {
+            html += `<td>${part.vram}</td><td>${part.speed}</td>`;
+        }
+        html += "</tr>";
+    });
+
+    html += "</table>";
+    table.innerHTML = html;
+    sessionStorage.setItem("compareParts", JSON.stringify(partsList));
 }

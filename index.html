@@ -1,34 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PC Parts Comparison Tool</title>
+    <title>PC Parts Terminal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>PC Parts Comparison Tool</h1>
-    
-    <div class="selection">
-        <h2>Select CPUs to Compare</h2>
-        <select id="cpu1">
-            <option value="i9-13900K">Intel Core i9-13900K</option>
-            <option value="r9-7950X">AMD Ryzen 9 7950X</option>
-        </select>
-        <select id="cpu2">
-            <option value="i7-13700K">Intel Core i7-13700K</option>
-            <option value="r7-7700X">AMD Ryzen 7 7700X</option>
-        </select>
+    <div class="terminal">
+        <div class="typewriter">
+            <h1>> PC PARTS COMPARISON TOOL</h1>
+        </div>
         
-        <h2>Select GPUs to Compare</h2>
-        <select id="gpu1">
-            <option value="rtx4090">NVIDIA RTX 4090</option>
-            <option value="rx7900xtx">AMD RX 7900 XTX</option>
-        </select>
-        <select id="gpu2">
-            <option value="rtx4080">NVIDIA RTX 4080</option>
-            <option value="rx7900xt">AMD RX 7900 XT</option>
-        </select>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search CPU/GPU (e.g., 'RTX 4090' or 'Ryzen 9')" autofocus>
+            <button onclick="searchPart()">ENTER</button>
+        </div>
         
-        <button onclick="compareParts()">Compare Now</button>
+        <div id="results"></div>
     </div>
     
     <script src="script.js"></script>
