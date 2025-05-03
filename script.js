@@ -89,32 +89,50 @@ if (window.location.pathname.includes("compare.html")) {
 }
 
 function updateComparisonTable(type, partsList) {
-    const table = document.getElementById("comparison-table");
-    let html = "<table>";
-
-    // Headers
-    html += "<tr>";
-    html += "<th>Model</th>";
+  const table = document.getElementById("comparison-table");
+  table.innerHTML = ""; // Clear previous
+  
+  partsList.forEach((part, index) => {
+    const card = document.createElement("div");
+    card.className = "part-card";
+    
+    let html = `
+      <h3>${part.name}</h3>
+      <div class="spec-row">
+        <span class="spec-name">Model</span>
+        <span>${part.name}</span>
+      </div>
+    `;
+    
     if (type === "cpu") {
-        html += "<th>Cores</th><th>Threads</th><th>Speed</th>";
+      html += `
+        <div class="spec-row">
+          <span class="spec-name">Cores</span>
+          <span>${part.cores}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Threads</span>
+          <span>${part.threads}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Speed</span>
+          <span>${part.speed}</span>
+        </div>
+      `;
     } else {
-        html += "<th>VRAM</th><th>Speed</th>";
+      html += `
+        <div class="spec-row">
+          <span class="spec-name">VRAM</span>
+          <span>${part.vram}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Speed</span>
+          <span>${part.speed}</span>
+        </div>
+      `;
     }
-    html += "</tr>";
-
-    // Rows
-    partsList.forEach(part => {
-        html += "<tr>";
-        html += `<td>${part.name}</td>`;
-        if (type === "cpu") {
-            html += `<td>${part.cores}</td><td>${part.threads}</td><td>${part.speed}</td>`;
-        } else {
-            html += `<td>${part.vram}</td><td>${part.speed}</td>`;
-        }
-        html += "</tr>";
-    });
-
-    html += "</table>";
-    table.innerHTML = html;
-    sessionStorage.setItem("compareParts", JSON.stringify(partsList));
+    
+    card.innerHTML = html;
+    table.appendChild(card);
+  });
 }
