@@ -13,6 +13,8 @@
             --text-secondary: #a0aec0;
             --success: #10b981;
             --danger: #ef4444;
+            --better-color: #00b4d8;  /* Blue for better */
+            --worse-color: #ff6b6b;   /* Red for worse */
             --card-bg: rgba(30, 41, 59, 0.8);
             --glow: 0 0 10px rgba(0, 180, 216, 0.5);
         }
@@ -48,111 +50,27 @@
         
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 1rem;
         }
         
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent);
-            text-shadow: var(--glow);
-        }
-        
-        .logo span {
-            color: var(--text-primary);
-        }
-        
-        .logo-icon {
-            font-size: 1.8rem;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-        }
-        
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-size: 0.9rem;
-            position: relative;
-            padding: 0.25rem 0;
-        }
-        
-        nav a:hover {
-            color: var(--accent);
-        }
-        
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-        
-        nav a:hover::after {
-            width: 100%;
-        }
-        
-        .active {
-            color: var(--accent);
-        }
-        
-        .active::after {
-            width: 100%;
-        }
-        
-        main {
-            flex: 1;
-            padding: 2rem 0;
-        }
-        
-        .hero {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .hero h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        /* Comparison Styles */
-        .comparison-container {
-            display: flex;
+        /* Main comparison grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-top: 2rem;
         }
         
+        .part-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        /* Part card styling */
         .part-card {
-            flex: 1;
             background-color: var(--card-bg);
             border-radius: 8px;
             padding: 1.5rem;
@@ -192,6 +110,7 @@
             color: var(--danger);
         }
         
+        /* Specs table styling */
         .specs-table {
             width: 100%;
             border-collapse: collapse;
@@ -222,40 +141,94 @@
             font-weight: bold;
         }
         
+        /* Comparison highlighting */
         .better {
-            color: var(--success);
+            color: var(--better-color);
             font-weight: bold;
+            position: relative;
+        }
+        
+        .better::after {
+            content: '↑';
+            margin-left: 4px;
+            font-size: 0.9em;
         }
         
         .worse {
-            color: var(--danger);
+            color: var(--worse-color);
             font-weight: bold;
+            position: relative;
         }
         
-        .benchmark-section {
-            margin-top: 2rem;
+        .worse::after {
+            content: '↓';
+            margin-left: 4px;
+            font-size: 0.9em;
         }
         
-        .benchmark-header {
+        /* Summary section */
+        .comparison-summary {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 180, 216, 0.2);
+            grid-column: span 2;
+        }
+        
+        .summary-header {
             font-size: 1.2rem;
             margin-bottom: 1rem;
             color: var(--accent);
-            border-bottom: 1px solid rgba(0, 180, 216, 0.2);
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
+        .summary-content {
+            line-height: 1.6;
+        }
+        
+        .summary-point {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .summary-point::before {
+            content: '•';
+            color: var(--accent);
+        }
+        
+        /* Search and add part section */
         .add-part-container {
-            margin-top: 2rem;
             background-color: var(--card-bg);
             padding: 1.5rem;
             border-radius: 8px;
             border: 1px solid rgba(0, 180, 216, 0.2);
+            grid-column: span 2;
         }
         
         .search-wrapper {
             position: relative;
             display: flex;
             margin-top: 1rem;
+        }
+        
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-radius: 0 0 8px 8px;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-top: none;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            display: none;
         }
         
         .search-wrapper input {
@@ -284,54 +257,33 @@
             opacity: 0.9;
         }
         
-        footer {
-            background-color: rgba(10, 14, 23, 0.8);
-            padding: 2rem 0;
-            border-top: 1px solid rgba(0, 180, 216, 0.2);
-            margin-top: 2rem;
-        }
-        
-        .footer-content {
+        .result-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 0.75rem;
         }
         
-        .footer-links {
-            display: flex;
-            gap: 1.5rem;
+        .result-item:hover {
+            background-color: rgba(0, 180, 216, 0.1);
         }
         
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
+        .result-item:last-child {
+            border-bottom: none;
         }
         
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-        
-        .copyright {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
+        /* Responsive design */
         @media (max-width: 768px) {
-            .comparison-container {
-                flex-direction: column;
+            .comparison-grid {
+                grid-template-columns: 1fr;
             }
             
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .comparison-summary,
+            .add-part-container {
+                grid-column: span 1;
             }
         }
     </style>
@@ -360,31 +312,10 @@
             <p>Detailed side-by-side comparison of PC components with specifications and benchmark results.</p>
         </section>
         
-        <div class="comparison-container" id="comparison-container">
-            <!-- Parts will be inserted here by JavaScript -->
-        </div>
-        
-        <div class="add-part-container">
-            <h3>Add Another Part to Compare</h3>
-            <div class="search-wrapper">
-                <input type="text" id="add-part" placeholder="Search for another part...">
-                <button onclick="addPart()">Add</button>
-            </div>
-            <div id="search-results" style="display: none; margin-top: 1rem;"></div>
+        <div class="comparison-grid" id="comparison-container">
+            <!-- Parts and summary will be inserted here by JavaScript -->
         </div>
     </main>
-    
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="copyright">© 2025 PC Parts Comparison. All rights reserved.</div>
-                <div class="footer-links">
-                    <a href="#">About</a>
-                    <a href="#">Privacy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
     
     <script>
         // Global variables
@@ -440,6 +371,23 @@
             
             currentParts = [initialPart];
             updateComparison();
+            
+            // Add search functionality
+            setupSearch();
+        }
+        
+        function setupSearch() {
+            const searchInput = document.createElement('div');
+            searchInput.className = 'add-part-container';
+            searchInput.innerHTML = `
+                <h3>Add Another Part to Compare</h3>
+                <div class="search-wrapper">
+                    <input type="text" id="add-part" placeholder="Search for another ${currentType}...">
+                    <button onclick="addPart()">Add</button>
+                    <div id="search-results"></div>
+                </div>
+            `;
+            document.getElementById('comparison-container').appendChild(searchInput);
         }
         
         // Update the comparison view
@@ -447,404 +395,182 @@
             const container = document.getElementById('comparison-container');
             container.innerHTML = '';
             
-            currentParts.forEach(part => {
-                const partCard = document.createElement('div');
-                partCard.className = 'part-card';
+            // Create columns for parts
+            const columnsDiv = document.createElement('div');
+            columnsDiv.className = 'comparison-grid';
+            
+            // Create part columns
+            const leftColumn = document.createElement('div');
+            leftColumn.className = 'part-column';
+            const rightColumn = document.createElement('div');
+            rightColumn.className = 'part-column';
+            
+            // Add parts to columns
+            currentParts.forEach((part, index) => {
+                const partCard = createPartCard(part);
+                if (index % 2 === 0) {
+                    leftColumn.appendChild(partCard);
+                } else {
+                    rightColumn.appendChild(partCard);
+                }
+            });
+            
+            columnsDiv.appendChild(leftColumn);
+            columnsDiv.appendChild(rightColumn);
+            container.appendChild(columnsDiv);
+            
+            // Add comparison highlights if we have 2 parts
+            if (currentParts.length === 2) {
+                addComparisonHighlights();
                 
-                // Create header
-                let headerHTML = `
-                    <div class="part-header">
-                        <div class="part-name">${part.name}</div>
-                        <div class="part-type type-${currentType}">${currentType.toUpperCase()}</div>
+                // Add summary at the bottom
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'comparison-summary';
+                summaryDiv.innerHTML = generateComparisonSummary();
+                container.appendChild(summaryDiv);
+            }
+            
+            // Re-add search functionality
+            setupSearch();
+        }
+        
+        function createPartCard(part) {
+            const partCard = document.createElement('div');
+            partCard.className = 'part-card';
+            
+            // Create header
+            let headerHTML = `
+                <div class="part-header">
+                    <div class="part-name">${part.name}</div>
+                    <div class="part-type type-${currentType}">${currentType.toUpperCase()}</div>
+            `;
+            
+            // Add image placeholder
+            headerHTML += `
+                <div style="width: 100px; height: 100px; margin: 0.5rem auto; background-color: rgba(0,180,216,0.1); 
+                            display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                    ${currentType === 'cpu' ? '💻' : '🎮'}
+                </div>
+            `;
+            
+            headerHTML += `</div>`;
+            
+            // Create specs table
+            let specsHTML = '<table class="specs-table"><tbody>';
+            
+            if (currentType === 'cpu') {
+                specsHTML += `
+                    <tr>
+                        <td class="spec-name">Cores/Threads</td>
+                        <td class="spec-value">${part.cores} / ${part.threads}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Clock Speed</td>
+                        <td class="spec-value">${part.speed}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Cache</td>
+                        <td class="spec-value">${part.cache}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">TDP</td>
+                        <td class="spec-value">${part.tdp}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Architecture</td>
+                        <td class="spec-value">${part.architecture}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Socket</td>
+                        <td class="spec-value">${part.socket}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Price</td>
+                        <td class="spec-value">${part.price}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Release Date</td>
+                        <td class="spec-value">${part.release_date}</td>
+                    </tr>
                 `;
-                
-                // Add image placeholder
-                headerHTML += `
-                    <div style="width: 100px; height: 100px; margin: 0.5rem auto; background-color: rgba(0,180,216,0.1); 
-                                display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                        ${currentType === 'cpu' ? '💻' : '🎮'}
-                    </div>
+            } else {
+                specsHTML += `
+                    <tr>
+                        <td class="spec-name">VRAM</td>
+                        <td class="spec-value">${part.vram}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Clock Speed</td>
+                        <td class="spec-value">${part.speed}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">CUDA Cores</td>
+                        <td class="spec-value">${part.cores.toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Bus Width</td>
+                        <td class="spec-value">${part.bus_width}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">TDP</td>
+                        <td class="spec-value">${part.tdp}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Architecture</td>
+                        <td class="spec-value">${part.architecture}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Ports</td>
+                        <td class="spec-value">${part.ports}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Price</td>
+                        <td class="spec-value">${part.price}</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Release Date</td>
+                        <td class="spec-value">${part.release_date}</td>
+                    </tr>
                 `;
-                
-                headerHTML += `</div>`;
-                
-                // Create specs table
-                let specsHTML = '<table class="specs-table"><tbody>';
+            }
+            
+            // Add benchmarks if comparing two parts
+            if (currentParts.length > 1) {
+                specsHTML += `
+                    <tr>
+                        <td colspan="2" style="padding-top: 1rem; color: var(--accent); font-weight: bold;">Benchmarks</td>
+                    </tr>
+                `;
                 
                 if (currentType === 'cpu') {
                     specsHTML += `
                         <tr>
-                            <td class="spec-name">Cores/Threads</td>
-                            <td class="spec-value">${part.cores} / ${part.threads}</td>
+                            <td class="spec-name">Single-Core Score</td>
+                            <td class="spec-value">${part.single_score.toLocaleString()}</td>
                         </tr>
                         <tr>
-                            <td class="spec-name">Clock Speed</td>
-                            <td class="spec-value">${part.speed}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Cache</td>
-                            <td class="spec-value">${part.cache}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">TDP</td>
-                            <td class="spec-value">${part.tdp}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Architecture</td>
-                            <td class="spec-value">${part.architecture}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Socket</td>
-                            <td class="spec-value">${part.socket}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Price</td>
-                            <td class="spec-value">${part.price}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Release Date</td>
-                            <td class="spec-value">${part.release_date}</td>
+                            <td class="spec-name">Multi-Core Score</td>
+                            <td class="spec-value">${part.multi_score.toLocaleString()}</td>
                         </tr>
                     `;
                 } else {
                     specsHTML += `
                         <tr>
-                            <td class="spec-name">VRAM</td>
-                            <td class="spec-value">${part.vram}</td>
+                            <td class="spec-name">3DMark Time Spy</td>
+                            <td class="spec-value">${part.timespy_score.toLocaleString()}</td>
                         </tr>
                         <tr>
-                            <td class="spec-name">Clock Speed</td>
-                            <td class="spec-value">${part.speed}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">CUDA Cores</td>
-                            <td class="spec-value">${part.cores.toLocaleString()}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Bus Width</td>
-                            <td class="spec-value">${part.bus_width}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">TDP</td>
-                            <td class="spec-value">${part.tdp}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Architecture</td>
-                            <td class="spec-value">${part.architecture}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Ports</td>
-                            <td class="spec-value">${part.ports}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Price</td>
-                            <td class="spec-value">${part.price}</td>
-                        </tr>
-                        <tr>
-                            <td class="spec-name">Release Date</td>
-                            <td class="spec-value">${part.release_date}</td>
+                            <td class="spec-name">3DMark Fire Strike</td>
+                            <td class="spec-value">${part.firestrike_score.toLocaleString()}</td>
                         </tr>
                     `;
                 }
-                
-                specsHTML += '</tbody></table>';
-                
-                // Add benchmark section if we have multiple parts
-                let benchmarkHTML = '';
-                if (currentParts.length > 1) {
-                    benchmarkHTML = '<div class="benchmark-section">';
-                    benchmarkHTML += '<div class="benchmark-header">Performance Benchmarks</div>';
-                    benchmarkHTML += '<table class="specs-table"><tbody>';
-                    
-                    if (currentType === 'cpu') {
-                        benchmarkHTML += `
-                            <tr>
-                                <td class="spec-name">Single-Core Score</td>
-                                <td class="spec-value">${part.single_score.toLocaleString()}</td>
-                            </tr>
-                            <tr>
-                                <td class="spec-name">Multi-Core Score</td>
-                                <td class="spec-value">${part.multi_score.toLocaleString()}</td>
-                            </tr>
-                        `;
-                    } else {
-                        benchmarkHTML += `
-                            <tr>
-                                <td class="spec-name">3DMark Time Spy</td>
-                                <td class="spec-value">${part.timespy_score.toLocaleString()}</td>
-                            </tr>
-                            <tr>
-                                <td class="spec-name">3DMark Fire Strike</td>
-                                <td class="spec-value">${part.firestrike_score.toLocaleString()}</td>
-                            </tr>
-                        `;
-                    }
-                    
-                    benchmarkHTML += '</tbody></table></div>';
-                }
-                
-                partCard.innerHTML = headerHTML + specsHTML + benchmarkHTML;
-                container.appendChild(partCard);
-            });
-            
-            // Add comparison highlights if we have 2 parts
-            if (currentParts.length === 2) {
-                addComparisonHighlights();
-                generateComparisonSummary();
             }
-
-// Add this new function to generate the summary
-function generateComparisonSummary() {
-    const part1 = currentParts[0];
-    const part2 = currentParts[1];
-    const container = document.getElementById('comparison-container');
-    
-    const summaryDiv = document.createElement('div');
-    summaryDiv.className = 'comparison-summary';
-    
-    let summaryHTML = `
-        <div class="summary-header">
-            <span>⚖️</span>
-            <span>Comparison Summary</span>
-        </div>
-        <div class="summary-content">
-    `;
-    
-    if (currentType === 'cpu') {
-        // CPU comparison points
-        const coreDiff = Math.round((part1.cores - part2.cores) / part2.cores * 100);
-        const threadDiff = Math.round((part1.threads - part2.threads) / part2.threads * 100);
-        const singleDiff = Math.round((part1.single_score - part2.single_score) / part2.single_score * 100);
-        const multiDiff = Math.round((part1.multi_score - part2.multi_score) / part2.multi_score * 100);
-        
-        summaryHTML += `
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'core count', part1.cores, part2.cores, 'cores')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'thread count', part1.threads, part2.threads, 'threads')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'single-core performance', part1.single_score, part2.single_score, 'points')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'multi-core performance', part1.multi_score, part2.multi_score, 'points')}
-            </div>
-        `;
-        
-        // Determine recommendation
-        const performanceScore = (singleDiff * 0.4) + (multiDiff * 0.6);
-        if (performanceScore > 0) {
-            summaryHTML += `
-                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
-                    The ${part1.name} is our recommended choice as it offers better overall performance.
-                </div>
-            `;
-        } else {
-            summaryHTML += `
-                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
-                    The ${part2.name} is our recommended choice as it offers better overall performance.
-                </div>
-            `;
-        }
-    } else {
-        // GPU comparison points
-        const vram1 = parseFloat(part1.vram);
-        const vram2 = parseFloat(part2.vram);
-        const vramDiff = Math.round((vram1 - vram2) / vram2 * 100);
-        const timespyDiff = Math.round((part1.timespy_score - part2.timespy_score) / part2.timespy_score * 100);
-        const firestrikeDiff = Math.round((part1.firestrike_score - part2.firestrike_score) / part2.firestrike_score * 100);
-        
-        summaryHTML += `
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'VRAM amount', vram1, vram2, 'GB')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'Time Spy score', part1.timespy_score, part2.timespy_score, 'points')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'Fire Strike score', part1.firestrike_score, part2.firestrike_score, 'points')}
-            </div>
-        `;
-        
-        // Determine recommendation
-        const performanceScore = (timespyDiff * 0.6) + (firestrikeDiff * 0.4);
-        if (performanceScore > 0) {
-            summaryHTML += `
-                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
-                    The ${part1.name} is our recommended choice for gaming as it delivers better benchmark results.
-                </div>
-            `;
-        } else {
-            summaryHTML += `
-                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
-                    The ${part2.name} is our recommended choice for gaming as it delivers better benchmark results.
-                </div>
-            `;
-        }
-    }
-    
-    summaryHTML += `</div>`;
-    summaryDiv.innerHTML = summaryHTML;
-    container.appendChild(summaryDiv);
-}
-            // Enhanced comparison text generator
-function getComparisonText(name1, name2, metric, value1, value2, unit) {
-    const diff = Math.round((value1 - value2) / value2 * 100);
-    const absDiff = Math.abs(diff);
-    
-    // Format values with units
-    const formattedValue1 = unit === 'points' ? value1.toLocaleString() : value1;
-    const formattedValue2 = unit === 'points' ? value2.toLocaleString() : value2;
-    const unitDisplay = unit ? ` ${unit}` : '';
-
-    if (diff > 5) { // Significant advantage
-        return `
-            <span style="color: var(--better-color);">${name1}</span> has a 
-            <strong>${absDiff}% higher</strong> ${metric} 
-            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
-        `;
-    } else if (diff < -5) { // Significant disadvantage
-        return `
-            <span style="color: var(--worse-color);">${name1}</span> has a 
-            <strong>${absDiff}% lower</strong> ${metric} 
-            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
-        `;
-    } else if (diff > 0) { // Slight advantage
-        return `
-            <span style="color: var(--better-color);">${name1}</span> has a 
-            <strong>slightly higher</strong> ${metric} 
-            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
-        `;
-    } else if (diff < 0) { // Slight disadvantage
-        return `
-            <span style="color: var(--worse-color);">${name1}</span> has a 
-            <strong>slightly lower</strong> ${metric} 
-            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
-        `;
-    } else { // Equal
-        return `
-            Both have <strong>identical</strong> ${metric} 
-            (${formattedValue1}${unitDisplay})
-        `;
-    }
-}
-
-// Enhanced recommendation generator
-function generateRecommendation(part1, part2, performanceScore) {
-    const winner = performanceScore > 0 ? part1 : part2;
-    const loser = performanceScore > 0 ? part2 : part1;
-    const absScore = Math.abs(Math.round(performanceScore));
-    
-    let recommendationText = '';
-    
-    if (absScore > 20) {
-        recommendationText = `The <strong>${winner.name}</strong> is <span style="color: var(--better-color);">clearly superior</span>, offering ${absScore}% better overall performance compared to the ${loser.name}.`;
-    } else if (absScore > 5) {
-        recommendationText = `The <strong>${winner.name}</strong> is our <span style="color: var(--better-color);">recommended choice</span> with ${absScore}% better overall performance than the ${loser.name}.`;
-    } else {
-        recommendationText = `The <strong>${winner.name}</strong> has a <span style="color: var(--better-color);">slight edge</span> over the ${loser.name}, but both are excellent choices.`;
-    }
-
-    return `
-        <div class="summary-point" style="margin-top: 1rem;">
-            <div style="font-weight: bold; color: var(--accent);">🏆 Recommendation:</div>
-            <div style="margin-top: 0.5rem;">${recommendationText}</div>
-        </div>
-    `;
-}
-
-// Updated generateComparisonSummary function
-function generateComparisonSummary() {
-    const part1 = currentParts[0];
-    const part2 = currentParts[1];
-    const container = document.getElementById('comparison-container');
-    
-    const summaryDiv = document.createElement('div');
-    summaryDiv.className = 'comparison-summary';
-    
-    let summaryHTML = `
-        <div class="summary-header">
-            <span>⚖️</span>
-            <span>Technical Comparison</span>
-        </div>
-        <div class="summary-content">
-    `;
-    
-    if (currentType === 'cpu') {
-        // Calculate performance differences
-        const coreDiff = Math.round((part1.cores - part2.cores) / part2.cores * 100);
-        const threadDiff = Math.round((part1.threads - part2.threads) / part2.threads * 100);
-        const clockDiff = Math.round(
-            (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
-            parseFloat(part2.speed) * 100
-        );
-        const singleDiff = Math.round((part1.single_score - part2.single_score) / part2.single_score * 100);
-        const multiDiff = Math.round((part1.multi_score - part2.multi_score) / part2.multi_score * 100);
-        
-        // Weighted performance score (40% single, 60% multi)
-        const performanceScore = (singleDiff * 0.4) + (multiDiff * 0.6);
-        
-        summaryHTML += `
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'core count', part1.cores, part2.cores, 'cores')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'thread count', part1.threads, part2.threads, 'threads')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'clock speed', 
-                    parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'single-core score', 
-                    part1.single_score, part2.single_score, 'points')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'multi-core score', 
-                    part1.multi_score, part2.multi_score, 'points')}
-            </div>
-            ${generateRecommendation(part1, part2, performanceScore)}
-        `;
-    } else {
-        // GPU comparison points
-        const vram1 = parseFloat(part1.vram);
-        const vram2 = parseFloat(part2.vram);
-        const vramDiff = Math.round((vram1 - vram2) / vram2 * 100);
-        const clockDiff = Math.round(
-            (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
-            parseFloat(part2.speed) * 100
-        );
-        const timespyDiff = Math.round((part1.timespy_score - part2.timespy_score) / part2.timespy_score * 100);
-        const firestrikeDiff = Math.round((part1.firestrike_score - part2.firestrike_score) / part2.firestrike_score * 100);
-        
-        // Weighted performance score (60% Time Spy, 40% Fire Strike)
-        const performanceScore = (timespyDiff * 0.6) + (firestrikeDiff * 0.4);
-        
-        summaryHTML += `
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'VRAM amount', vram1, vram2, 'GB')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'clock speed', 
-                    parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'Time Spy score', 
-                    part1.timespy_score, part2.timespy_score, 'points')}
-            </div>
-            <div class="summary-point">
-                ${getComparisonText(part1.name, part2.name, 'Fire Strike score', 
-                    part1.firestrike_score, part2.firestrike_score, 'points')}
-            </div>
-            ${generateRecommendation(part1, part2, performanceScore)}
-        `;
-    }
-    
-    summaryHTML += `</div>`;
-    summaryDiv.innerHTML = summaryHTML;
-    container.appendChild(summaryDiv);
-}
+            
+            specsHTML += '</tbody></table>';
+            partCard.innerHTML = headerHTML + specsHTML;
+            
+            return partCard;
         }
         
         // Add comparison highlights between two parts
@@ -856,45 +582,43 @@ function generateComparisonSummary() {
             // Compare basic specs
             if (currentType === 'cpu') {
                 compareValues(tables, 'Cores/Threads', 
-                    `${part1.cores} / ${part1.threads}`, 
-                    `${part2.cores} / ${part2.threads}`,
+                    part1.cores, part2.cores,
                     part1.cores > part2.cores);
                     
-                compareValues(tables, 'Clock Speed', part1.speed, part2.speed,
+                compareValues(tables, 'Clock Speed', 
+                    parseFloat(part1.speed), parseFloat(part2.speed),
                     parseFloat(part1.speed) > parseFloat(part2.speed));
                     
-                compareValues(tables, 'Cache', part1.cache, part2.cache,
+                compareValues(tables, 'Cache', 
+                    parseFloat(part1.cache), parseFloat(part2.cache),
                     parseFloat(part1.cache) > parseFloat(part2.cache));
                     
                 compareValues(tables, 'Single-Core Score', 
-                    part1.single_score.toLocaleString(), 
-                    part2.single_score.toLocaleString(),
+                    part1.single_score, part2.single_score,
                     part1.single_score > part2.single_score);
                     
                 compareValues(tables, 'Multi-Core Score', 
-                    part1.multi_score.toLocaleString(), 
-                    part2.multi_score.toLocaleString(),
+                    part1.multi_score, part2.multi_score,
                     part1.multi_score > part2.multi_score);
             } else {
-                compareValues(tables, 'VRAM', part1.vram, part2.vram,
+                compareValues(tables, 'VRAM', 
+                    parseFloat(part1.vram), parseFloat(part2.vram),
                     parseFloat(part1.vram) > parseFloat(part2.vram));
                     
-                compareValues(tables, 'Clock Speed', part1.speed, part2.speed,
+                compareValues(tables, 'Clock Speed', 
+                    parseFloat(part1.speed), parseFloat(part2.speed),
                     parseFloat(part1.speed) > parseFloat(part2.speed));
                     
                 compareValues(tables, 'CUDA Cores', 
-                    part1.cores.toLocaleString(), 
-                    part2.cores.toLocaleString(),
+                    part1.cores, part2.cores,
                     part1.cores > part2.cores);
                     
                 compareValues(tables, '3DMark Time Spy', 
-                    part1.timespy_score.toLocaleString(), 
-                    part2.timespy_score.toLocaleString(),
+                    part1.timespy_score, part2.timespy_score,
                     part1.timespy_score > part2.timespy_score);
                     
                 compareValues(tables, '3DMark Fire Strike', 
-                    part1.firestrike_score.toLocaleString(), 
-                    part2.firestrike_score.toLocaleString(),
+                    part1.firestrike_score, part2.firestrike_score,
                     part1.firestrike_score > part2.firestrike_score);
             }
         }
@@ -921,58 +645,211 @@ function generateComparisonSummary() {
             }
         }
         
-        // Update the addPart function to show results properly
+        // Generate comparison summary
+        function generateComparisonSummary() {
+            const part1 = currentParts[0];
+            const part2 = currentParts[1];
+            
+            let summaryHTML = `
+                <div class="summary-header">
+                    <span>⚖️</span>
+                    <span>Comparison Summary</span>
+                </div>
+                <div class="summary-content">
+            `;
+            
+            if (currentType === 'cpu') {
+                // Calculate performance differences
+                const coreDiff = Math.round((part1.cores - part2.cores) / part2.cores * 100);
+                const threadDiff = Math.round((part1.threads - part2.threads) / part2.threads * 100);
+                const clockDiff = Math.round(
+                    (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
+                    parseFloat(part2.speed) * 100
+                );
+                const singleDiff = Math.round((part1.single_score - part2.single_score) / part2.single_score * 100);
+                const multiDiff = Math.round((part1.multi_score - part2.multi_score) / part2.multi_score * 100);
+                
+                // Weighted performance score (40% single, 60% multi)
+                const performanceScore = (singleDiff * 0.4) + (multiDiff * 0.6);
+                
+                summaryHTML += `
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'core count', part1.cores, part2.cores, 'cores')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'thread count', part1.threads, part2.threads, 'threads')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'clock speed', 
+                            parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'single-core score', 
+                            part1.single_score, part2.single_score, 'points')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'multi-core score', 
+                            part1.multi_score, part2.multi_score, 'points')}
+                    </div>
+                    ${generateRecommendation(part1, part2, performanceScore)}
+                `;
+            } else {
+                // GPU comparison points
+                const vram1 = parseFloat(part1.vram);
+                const vram2 = parseFloat(part2.vram);
+                const vramDiff = Math.round((vram1 - vram2) / vram2 * 100);
+                const clockDiff = Math.round(
+                    (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
+                    parseFloat(part2.speed) * 100
+                );
+                const timespyDiff = Math.round((part1.timespy_score - part2.timespy_score) / part2.timespy_score * 100);
+                const firestrikeDiff = Math.round((part1.firestrike_score - part2.firestrike_score) / part2.firestrike_score * 100);
+                
+                // Weighted performance score (60% Time Spy, 40% Fire Strike)
+                const performanceScore = (timespyDiff * 0.6) + (firestrikeDiff * 0.4);
+                
+                summaryHTML += `
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'VRAM amount', vram1, vram2, 'GB')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'clock speed', 
+                            parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'Time Spy score', 
+                            part1.timespy_score, part2.timespy_score, 'points')}
+                    </div>
+                    <div class="summary-point">
+                        ${getComparisonText(part1.name, part2.name, 'Fire Strike score', 
+                            part1.firestrike_score, part2.firestrike_score, 'points')}
+                    </div>
+                    ${generateRecommendation(part1, part2, performanceScore)}
+                `;
+            }
+            
+            summaryHTML += `</div>`;
+            return summaryHTML;
+        }
+        
+        // Generate comparison text
+        function getComparisonText(name1, name2, metric, value1, value2, unit) {
+            const diff = Math.round((value1 - value2) / value2 * 100);
+            const absDiff = Math.abs(diff);
+            
+            // Format values with units
+            const formattedValue1 = unit === 'points' ? value1.toLocaleString() : value1;
+            const formattedValue2 = unit === 'points' ? value2.toLocaleString() : value2;
+            const unitDisplay = unit ? ` ${unit}` : '';
 
+            if (diff > 5) { // Significant advantage
+                return `
+                    <span style="color: var(--better-color);">${name1}</span> has a 
+                    <strong>${absDiff}% higher</strong> ${metric} 
+                    (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+                `;
+            } else if (diff < -5) { // Significant disadvantage
+                return `
+                    <span style="color: var(--worse-color);">${name1}</span> has a 
+                    <strong>${absDiff}% lower</strong> ${metric} 
+                    (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+                `;
+            } else if (diff > 0) { // Slight advantage
+                return `
+                    <span style="color: var(--better-color);">${name1}</span> has a 
+                    <strong>slightly higher</strong> ${metric} 
+                    (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+                `;
+            } else if (diff < 0) { // Slight disadvantage
+                return `
+                    <span style="color: var(--worse-color);">${name1}</span> has a 
+                    <strong>slightly lower</strong> ${metric} 
+                    (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+                `;
+            } else { // Equal
+                return `
+                    Both have <strong>identical</strong> ${metric} 
+                    (${formattedValue1}${unitDisplay})
+                `;
+            }
+        }
+        
+        // Generate recommendation
+        function generateRecommendation(part1, part2, performanceScore) {
+            const winner = performanceScore > 0 ? part1 : part2;
+            const loser = performanceScore > 0 ? part2 : part1;
+            const absScore = Math.abs(Math.round(performanceScore));
+            
+            let recommendationText = '';
+            
+            if (absScore > 20) {
+                recommendationText = `The <strong>${winner.name}</strong> is <span style="color: var(--better-color);">clearly superior</span>, offering ${absScore}% better overall performance compared to the ${loser.name}.`;
+            } else if (absScore > 5) {
+                recommendationText = `The <strong>${winner.name}</strong> is our <span style="color: var(--better-color);">recommended choice</span> with ${absScore}% better overall performance than the ${loser.name}.`;
+            } else {
+                recommendationText = `The <strong>${winner.name}</strong> has a <span style="color: var(--better-color);">slight edge</span> over the ${loser.name}, but both are excellent choices.`;
+            }
+
+            return `
+                <div class="summary-point" style="margin-top: 1rem;">
+                    <div style="font-weight: bold; color: var(--accent);">🏆 Recommendation:</div>
+                    <div style="margin-top: 0.5rem;">${recommendationText}</div>
+                </div>
+            `;
+        }
+        
+        // Add another part to comparison
         async function addPart() {
             const query = document.getElementById('add-part').value.trim();
             if (!query) return;
+
             const resultsDiv = document.getElementById('search-results');
-            resultsDiv.innerHTML = ''
+            resultsDiv.innerHTML = '';
+            
             // Show loading state
             resultsDiv.innerHTML = '<div style="padding: 1rem; color: var(--text-secondary);">Searching...</div>';
             resultsDiv.style.display = 'block';
+
             // Ensure parts are loaded
             if (partsData[currentType + 's'].length === 0) {
                 await loadPartsData();
             }
+
             const allParts = partsData[currentType + 's'];
-            const matches = allParts.filter(part => part.name.toLowerCase().includes(query.toLowerCase()) &&
+            const matches = allParts.filter(part => 
+                part.name.toLowerCase().includes(query.toLowerCase()) &&
                 !currentParts.some(p => p.id === part.id)
-                                           );
+            );
+
             if (matches.length === 0) {
                 resultsDiv.innerHTML = '<div style="padding: 1rem; color: var(--text-secondary);">No matching parts found</div>';
                 return;
             }
+
             // Show results with better styling
-                resultsDiv.innerHTML = matches.map(part => `
-                <div class="result-item" onclick="selectPart('${part.id}')" 
-                style="padding: 0.75rem; margin: 0.25rem 0; border-radius: 4px;
-                    background: rgba(0,180,216,0.1); cursor: pointer;
-                    transition: background 0.2s ease;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 30px; height: 30px; background-color: rgba(0,180,216,0.2); 
-                            display: flex; align-items: center; justify-content: center; 
-                            border-radius: 4px; font-size: 1.1rem;">
-                    ${currentType === 'cpu' ? '💻' : '🎮'}
-                </div>
-                <div>
-                    <div style="font-weight: bold;">${part.name}</div>
-                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                        ${currentType === 'cpu' ? 
-                            `${part.cores}C/${part.threads}T • ${part.speed}` : 
-                            `${part.vram} • ${part.speed}`}
+            resultsDiv.innerHTML = matches.map(part => `
+                <div class="result-item" onclick="selectPart('${part.id}')">
+                    <div style="width: 30px; height: 30px; background-color: rgba(0,180,216,0.2); 
+                                display: flex; align-items: center; justify-content: center; 
+                                border-radius: 4px; font-size: 1.1rem;">
+                        ${currentType === 'cpu' ? '💻' : '🎮'}
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">${part.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                            ${currentType === 'cpu' ? 
+                                `${part.cores}C/${part.threads}T • ${part.speed}` : 
+                                `${part.vram} • ${part.speed}`}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        `).join('');
-    
+            `).join('');
         }
         
         // Select a part from search results
         function selectPart(id) {
             const part = partsData[currentType + 's'].find(p => p.id === id);
-            if (part) {
+            if (part && currentParts.length < 2) {
                 currentParts.push(part);
                 updateComparison();
                 document.getElementById('add-part').value = '';
