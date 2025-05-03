@@ -1,1 +1,32 @@
-
+[
+    {
+        "id": "rtx4090",
+        "name": "NVIDIA RTX 4090",
+        "vram": "24GB GDDR6X",
+        "speed": "2.52GHz",
+        "cores": 16384,
+        "bus_width": "384-bit",
+        "tdp": "450W",
+        "architecture": "Ada Lovelace",
+        "ports": "3x DisplayPort, 1x HDMI",
+        "timespy_score": 35012,
+        "firestrike_score": 62543,
+        "price": "$1599",
+        "release_date": "Q4 2022"
+    },
+    {
+        "id": "rx7900xtx",
+        "name": "AMD RX 7900 XTX",
+        "vram": "24GB GDDR6",
+        "speed": "2.5GHz",
+        "cores": 12288,
+        "bus_width": "384-bit",
+        "tdp": "355W",
+        "architecture": "RDNA 3",
+        "ports": "2x DisplayPort, 1x HDMI, 1x USB-C",
+        "timespy_score": 28976,
+        "firestrike_score": 54321,
+        "price": "$999",
+        "release_date": "Q4 2022"
+    }
+]
