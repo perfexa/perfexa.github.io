@@ -58,3 +58,63 @@ function searchPart() {
 function startComparison(type, id) {
     window.location.href = `compare.html?type=${type}&id=${id}`;
 }
+
+// Comparison Page Logic
+if (window.location.pathname.includes("compare.html")) {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const id = params.get("id");
+
+    // Set comparison type (CPU/GPU)
+    document.getElementById("comparison-type").textContent = type.toUpperCase();
+
+    // Load first part
+    const part = parts[type + "s"].find(p => p.id === id);
+    updateComparisonTable(type, [part]);
+
+    // Add new parts
+    window.addPart = function() {
+        const query = document.getElementById("add-part").value.toLowerCase();
+        const matches = parts[type + "s"].filter(p => 
+            p.name.toLowerCase().includes(query)
+        );
+
+        if (matches.length > 0) {
+            const currentParts = JSON.parse(sessionStorage.getItem("compareParts") || "[]");
+            currentParts.push(matches[0]);
+            sessionStorage.setItem("compareParts", JSON.stringify(currentParts));
+            updateComparisonTable(type, currentParts);
+        }
+    };
+}
+
+function updateComparisonTable(type, partsList) {
+    const table = document.getElementById("comparison-table");
+    let html = "<table>";
+
+    // Headers
+    html += "<tr>";
+    html += "<th>Model</th>";
+    if (type === "cpu") {
+        html += "<th>Cores</th><th>Threads</th><th>Speed</th>";
+    } else {
+        html += "<th>VRAM</th><th>Speed</th>";
+    }
+    html += "</tr>";
+
+    // Rows
+    partsList.forEach(part => {
+        html += "<tr>";
+        html += `<td>${part.name}</td>`;
+        if (type === "cpu") {
+            html += `<td>${part.cores}</td><td>${part.threads}</td><td>${part.speed}</td>`;
+        } else {
+            html += `<td>${part.vram}</td><td>${part.speed}</td>`;
+        }
+        html += "</tr>";
+    });
+
+    html += "</table>";
+    table.innerHTML = html;
+    sessionStorage.setItem("compareParts", JSON.stringify(partsList));
+}
