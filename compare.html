@@ -667,54 +667,52 @@
             }
         }
         
-        // Add another part to comparison
+        // Update the addPart function to show results properly
+
         async function addPart() {
             const query = document.getElementById('add-part').value.trim();
             if (!query) return;
-            
             const resultsDiv = document.getElementById('search-results');
-            resultsDiv.innerHTML = '';
-            resultsDiv.style.display = 'none';
-            
+            resultsDiv.innerHTML = ''
+            // Show loading state
+            resultsDiv.innerHTML = '<div style="padding: 1rem; color: var(--text-secondary);">Searching...</div>';
+            resultsDiv.style.display = 'block';
+            // Ensure parts are loaded
+            if (partsData[currentType + 's'].length === 0) {
+                await loadPartsData();
+            }
             const allParts = partsData[currentType + 's'];
-            const matches = allParts.filter(part => 
-                part.name.toLowerCase().includes(query.toLowerCase()) &&
+            const matches = allParts.filter(part => part.name.toLowerCase().includes(query.toLowerCase()) &&
                 !currentParts.some(p => p.id === part.id)
-            );
-            
+                                           );
             if (matches.length === 0) {
                 resultsDiv.innerHTML = '<div style="padding: 1rem; color: var(--text-secondary);">No matching parts found</div>';
-                resultsDiv.style.display = 'block';
                 return;
             }
-            
-            if (matches.length === 1) {
-                // If only one match, add it directly
-                currentParts.push(matches[0]);
-                updateComparison();
-                document.getElementById('add-part').value = '';
-            } else {
-                // Show results to choose from
+            // Show results with better styling
                 resultsDiv.innerHTML = matches.map(part => `
-                    <div class="result-item" onclick="selectPart('${part.id}')">
-                        <div style="width: 30px; height: 30px; background-color: rgba(0,180,216,0.1); 
-                                    display: flex; align-items: center; justify-content: center; 
-                                    border-radius: 4px; margin-right: 0.5rem;">
-                            ${currentType === 'cpu' ? '💻' : '🎮'}
-                        </div>
-                        <div>
-                            <div style="font-weight: bold;">${part.name}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                                ${currentType === 'cpu' ? 
-                                    `${part.cores}C/${part.threads}T ${part.speed}` : 
-                                    `${part.vram} ${part.speed}`}
-                            </div>
-                        </div>
+                <div class="result-item" onclick="selectPart('${part.id}')" 
+                style="padding: 0.75rem; margin: 0.25rem 0; border-radius: 4px;
+                    background: rgba(0,180,216,0.1); cursor: pointer;
+                    transition: background 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 30px; height: 30px; background-color: rgba(0,180,216,0.2); 
+                            display: flex; align-items: center; justify-content: center; 
+                            border-radius: 4px; font-size: 1.1rem;">
+                    ${currentType === 'cpu' ? '💻' : '🎮'}
+                </div>
+                <div>
+                    <div style="font-weight: bold;">${part.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        ${currentType === 'cpu' ? 
+                            `${part.cores}C/${part.threads}T • ${part.speed}` : 
+                            `${part.vram} • ${part.speed}`}
                     </div>
-                `).join('');
-                
-                resultsDiv.style.display = 'block';
-            }
+                </div>
+            </div>
+        </div>
+        `).join('');
+    
         }
         
         // Select a part from search results
