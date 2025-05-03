@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PC Parts Comparison</title>
-    <link rel="stylesheet" href="style.css">
+  <title>PC Parts Comparison</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="terminal">
-        <h1>> COMPARISON MODE: <span id="comparison-type"></span></h1>
-        
-        <div id="comparison-table"></div>
-        
-        <div class="search-container">
-            <input type="text" id="add-part" placeholder="Add another part...">
-            <button onclick="addPart()">ADD</button>
-        </div>
-        
-        <a href="index.html"><< BACK TO SEARCH</a>
+  <div class="terminal">
+    <div class="typewriter">
+      <h1>> COMPARISON MODE: <span id="comparison-type" class="glitch"></span></h1>
     </div>
     
-    <script src="script.js"></script>
+    <div class="comparison-table" id="comparison-table">
+      <!-- Filled dynamically by JavaScript -->
+    </div>
+    
+    <div class="search-container pulse">
+      <input type="text" id="add-part" placeholder="Search another part...">
+      <button onclick="addPart()">ADD TO COMPARE</button>
+    </div>
+    
+    <a href="index.html" class="back-link"><< BACK TO SEARCH</a>
+  </div>
+  
+  <script src="script.js"></script>
 </body>
 </html>
