@@ -590,7 +590,261 @@
             // Add comparison highlights if we have 2 parts
             if (currentParts.length === 2) {
                 addComparisonHighlights();
+                generateComparisonSummary();
             }
+
+// Add this new function to generate the summary
+function generateComparisonSummary() {
+    const part1 = currentParts[0];
+    const part2 = currentParts[1];
+    const container = document.getElementById('comparison-container');
+    
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'comparison-summary';
+    
+    let summaryHTML = `
+        <div class="summary-header">
+            <span>⚖️</span>
+            <span>Comparison Summary</span>
+        </div>
+        <div class="summary-content">
+    `;
+    
+    if (currentType === 'cpu') {
+        // CPU comparison points
+        const coreDiff = Math.round((part1.cores - part2.cores) / part2.cores * 100);
+        const threadDiff = Math.round((part1.threads - part2.threads) / part2.threads * 100);
+        const singleDiff = Math.round((part1.single_score - part2.single_score) / part2.single_score * 100);
+        const multiDiff = Math.round((part1.multi_score - part2.multi_score) / part2.multi_score * 100);
+        
+        summaryHTML += `
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'core count', part1.cores, part2.cores, 'cores')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'thread count', part1.threads, part2.threads, 'threads')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'single-core performance', part1.single_score, part2.single_score, 'points')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'multi-core performance', part1.multi_score, part2.multi_score, 'points')}
+            </div>
+        `;
+        
+        // Determine recommendation
+        const performanceScore = (singleDiff * 0.4) + (multiDiff * 0.6);
+        if (performanceScore > 0) {
+            summaryHTML += `
+                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
+                    The ${part1.name} is our recommended choice as it offers better overall performance.
+                </div>
+            `;
+        } else {
+            summaryHTML += `
+                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
+                    The ${part2.name} is our recommended choice as it offers better overall performance.
+                </div>
+            `;
+        }
+    } else {
+        // GPU comparison points
+        const vram1 = parseFloat(part1.vram);
+        const vram2 = parseFloat(part2.vram);
+        const vramDiff = Math.round((vram1 - vram2) / vram2 * 100);
+        const timespyDiff = Math.round((part1.timespy_score - part2.timespy_score) / part2.timespy_score * 100);
+        const firestrikeDiff = Math.round((part1.firestrike_score - part2.firestrike_score) / part2.firestrike_score * 100);
+        
+        summaryHTML += `
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'VRAM amount', vram1, vram2, 'GB')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'Time Spy score', part1.timespy_score, part2.timespy_score, 'points')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'Fire Strike score', part1.firestrike_score, part2.firestrike_score, 'points')}
+            </div>
+        `;
+        
+        // Determine recommendation
+        const performanceScore = (timespyDiff * 0.6) + (firestrikeDiff * 0.4);
+        if (performanceScore > 0) {
+            summaryHTML += `
+                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
+                    The ${part1.name} is our recommended choice for gaming as it delivers better benchmark results.
+                </div>
+            `;
+        } else {
+            summaryHTML += `
+                <div class="summary-point" style="margin-top: 1rem; font-weight: bold;">
+                    The ${part2.name} is our recommended choice for gaming as it delivers better benchmark results.
+                </div>
+            `;
+        }
+    }
+    
+    summaryHTML += `</div>`;
+    summaryDiv.innerHTML = summaryHTML;
+    container.appendChild(summaryDiv);
+}
+            // Enhanced comparison text generator
+function getComparisonText(name1, name2, metric, value1, value2, unit) {
+    const diff = Math.round((value1 - value2) / value2 * 100);
+    const absDiff = Math.abs(diff);
+    
+    // Format values with units
+    const formattedValue1 = unit === 'points' ? value1.toLocaleString() : value1;
+    const formattedValue2 = unit === 'points' ? value2.toLocaleString() : value2;
+    const unitDisplay = unit ? ` ${unit}` : '';
+
+    if (diff > 5) { // Significant advantage
+        return `
+            <span style="color: var(--better-color);">${name1}</span> has a 
+            <strong>${absDiff}% higher</strong> ${metric} 
+            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+        `;
+    } else if (diff < -5) { // Significant disadvantage
+        return `
+            <span style="color: var(--worse-color);">${name1}</span> has a 
+            <strong>${absDiff}% lower</strong> ${metric} 
+            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+        `;
+    } else if (diff > 0) { // Slight advantage
+        return `
+            <span style="color: var(--better-color);">${name1}</span> has a 
+            <strong>slightly higher</strong> ${metric} 
+            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+        `;
+    } else if (diff < 0) { // Slight disadvantage
+        return `
+            <span style="color: var(--worse-color);">${name1}</span> has a 
+            <strong>slightly lower</strong> ${metric} 
+            (${formattedValue1}${unitDisplay} vs ${formattedValue2}${unitDisplay})
+        `;
+    } else { // Equal
+        return `
+            Both have <strong>identical</strong> ${metric} 
+            (${formattedValue1}${unitDisplay})
+        `;
+    }
+}
+
+// Enhanced recommendation generator
+function generateRecommendation(part1, part2, performanceScore) {
+    const winner = performanceScore > 0 ? part1 : part2;
+    const loser = performanceScore > 0 ? part2 : part1;
+    const absScore = Math.abs(Math.round(performanceScore));
+    
+    let recommendationText = '';
+    
+    if (absScore > 20) {
+        recommendationText = `The <strong>${winner.name}</strong> is <span style="color: var(--better-color);">clearly superior</span>, offering ${absScore}% better overall performance compared to the ${loser.name}.`;
+    } else if (absScore > 5) {
+        recommendationText = `The <strong>${winner.name}</strong> is our <span style="color: var(--better-color);">recommended choice</span> with ${absScore}% better overall performance than the ${loser.name}.`;
+    } else {
+        recommendationText = `The <strong>${winner.name}</strong> has a <span style="color: var(--better-color);">slight edge</span> over the ${loser.name}, but both are excellent choices.`;
+    }
+
+    return `
+        <div class="summary-point" style="margin-top: 1rem;">
+            <div style="font-weight: bold; color: var(--accent);">🏆 Recommendation:</div>
+            <div style="margin-top: 0.5rem;">${recommendationText}</div>
+        </div>
+    `;
+}
+
+// Updated generateComparisonSummary function
+function generateComparisonSummary() {
+    const part1 = currentParts[0];
+    const part2 = currentParts[1];
+    const container = document.getElementById('comparison-container');
+    
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'comparison-summary';
+    
+    let summaryHTML = `
+        <div class="summary-header">
+            <span>⚖️</span>
+            <span>Technical Comparison</span>
+        </div>
+        <div class="summary-content">
+    `;
+    
+    if (currentType === 'cpu') {
+        // Calculate performance differences
+        const coreDiff = Math.round((part1.cores - part2.cores) / part2.cores * 100);
+        const threadDiff = Math.round((part1.threads - part2.threads) / part2.threads * 100);
+        const clockDiff = Math.round(
+            (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
+            parseFloat(part2.speed) * 100
+        );
+        const singleDiff = Math.round((part1.single_score - part2.single_score) / part2.single_score * 100);
+        const multiDiff = Math.round((part1.multi_score - part2.multi_score) / part2.multi_score * 100);
+        
+        // Weighted performance score (40% single, 60% multi)
+        const performanceScore = (singleDiff * 0.4) + (multiDiff * 0.6);
+        
+        summaryHTML += `
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'core count', part1.cores, part2.cores, 'cores')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'thread count', part1.threads, part2.threads, 'threads')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'clock speed', 
+                    parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'single-core score', 
+                    part1.single_score, part2.single_score, 'points')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'multi-core score', 
+                    part1.multi_score, part2.multi_score, 'points')}
+            </div>
+            ${generateRecommendation(part1, part2, performanceScore)}
+        `;
+    } else {
+        // GPU comparison points
+        const vram1 = parseFloat(part1.vram);
+        const vram2 = parseFloat(part2.vram);
+        const vramDiff = Math.round((vram1 - vram2) / vram2 * 100);
+        const clockDiff = Math.round(
+            (parseFloat(part1.speed) - parseFloat(part2.speed)) / 
+            parseFloat(part2.speed) * 100
+        );
+        const timespyDiff = Math.round((part1.timespy_score - part2.timespy_score) / part2.timespy_score * 100);
+        const firestrikeDiff = Math.round((part1.firestrike_score - part2.firestrike_score) / part2.firestrike_score * 100);
+        
+        // Weighted performance score (60% Time Spy, 40% Fire Strike)
+        const performanceScore = (timespyDiff * 0.6) + (firestrikeDiff * 0.4);
+        
+        summaryHTML += `
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'VRAM amount', vram1, vram2, 'GB')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'clock speed', 
+                    parseFloat(part1.speed), parseFloat(part2.speed), 'GHz')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'Time Spy score', 
+                    part1.timespy_score, part2.timespy_score, 'points')}
+            </div>
+            <div class="summary-point">
+                ${getComparisonText(part1.name, part2.name, 'Fire Strike score', 
+                    part1.firestrike_score, part2.firestrike_score, 'points')}
+            </div>
+            ${generateRecommendation(part1, part2, performanceScore)}
+        `;
+    }
+    
+    summaryHTML += `</div>`;
+    summaryDiv.innerHTML = summaryHTML;
+    container.appendChild(summaryDiv);
+}
         }
         
         // Add comparison highlights between two parts
