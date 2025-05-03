@@ -1,1 +1,32 @@
-
+[
+    {
+        "id": "i9-13900K",
+        "name": "Intel Core i9-13900K",
+        "cores": 24,
+        "threads": 32,
+        "speed": "5.8GHz",
+        "cache": "36MB",
+        "tdp": "125W",
+        "architecture": "Raptor Lake",
+        "socket": "LGA1700",
+        "single_score": 2314,
+        "multi_score": 30345,
+        "price": "$549",
+        "release_date": "Q4 2022"
+    },
+    {
+        "id": "r9-7950X",
+        "name": "AMD Ryzen 9 7950X",
+        "cores": 16,
+        "threads": 32,
+        "speed": "5.7GHz",
+        "cache": "80MB",
+        "tdp": "170W",
+        "architecture": "Zen 4",
+        "socket": "AM5",
+        "single_score": 2243,
+        "multi_score": 28745,
+        "price": "$599",
+        "release_date": "Q3 2022"
+    }
+]
